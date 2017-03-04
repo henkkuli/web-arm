@@ -1,0 +1,30 @@
+{
+    "compilerOptions": {
+        "target": "es2015",
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "paths": {
+            "*": [
+                "*",
+                "../common/*"
+            ]
+        },
+        "rootDirs": [
+            ".",
+            "../common"
+        ],
+        "baseUrl": ".",
+
+        "forceConsistentCasingInFileNames": true,
+        "listFiles": true,
+        "listEmittedFiles": true,
+        "newLine": "LF",
+        "noFallthroughCasesInSwitch": true,
+        "noImplicitReturns": true,
+        "noImplicitAny": true,
+        "noImplicitThis": true,
+        "alwaysStrict": true,
+        "strictNullChecks": true
+    },
+    "extends": "../tsconfig.base.json"
+}

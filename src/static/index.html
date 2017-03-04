@@ -1,0 +1,23 @@
+<!doctype html>
+<html>
+<head>
+    <title>A website</title>
+    <meta charset="utf-8" />
+    <script src="system.js"></script>
+    <script>
+        SystemJS.config({
+            baseURL: './',
+            packages: {
+                '.': {
+                    defaultExtension: 'js'
+                }
+            }
+        });
+
+        SystemJS.import('index');
+    </script>
+</head>
+<body>
+
+</body>
+</html>
