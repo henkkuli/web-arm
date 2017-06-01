@@ -4,20 +4,84 @@
     <title>A website</title>
     <meta charset="utf-8" />
     <script src="system.js"></script>
+    <script src="unicorn.js"></script>
+    <script src="keystone.js"></script>
+    <script src="capstone.js"></script>
+    <script src="sprintf.js"></script>
     <script>
         SystemJS.config({
             baseURL: './',
             packages: {
                 '.': {
                     defaultExtension: 'js'
-                }
-            }
+                },
+            },
         });
 
         SystemJS.import('index');
     </script>
+    <style>
+        #heapPanel {
+            position: absolute;
+            top: 2em;
+            bottom: 0;
+            right: 0;
+            left: 50%;
+            overflow-y: scroll;
+        }
+        #codePanel {
+            position: absolute;
+            top: 2em;
+            bottom: 0;
+            right: 50%;
+            left: 0;
+            overflow-y: scroll;
+        }
+        #controlPanel {
+            position: absolute;
+            top: 0;
+            bottom: 2em;
+            right: 0;
+            left: 0;
+            overflow-y: scroll;
+        }
+        #code {
+            display: table-row;
+            width: 100%;
+            max-height: 100%;
+            box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            -webkit-box-sizing: border-box;
+            resize: vertical;
+        }
+        #statusPanel {
+            display: table-row;
+        }
+        .memoryLine {
+            font-family: monospace;
+            font-size: 20px;
+            position: absolute;
+            left: 0px;
+            line-height: none;
+            white-space: pre;
+        }
+        .memoryLine.pc {
+            background: #a00;
+        }
+    </style>
 </head>
 <body>
-
+    <div id="controlPanel">
+        <button id="compile">Compile</button>
+        <button id="step">Step</button>
+        <button id="run">Run</button>
+        <button id="stop">Stop</button>
+        <span id="freq"></span>
+    </div>
+    <div id="codePanel">
+        <textarea id="code"></textarea>
+        <div id="statusPanel">Tekstiä</div>
+    </div>
+    <div id="heapPanel"></div>
 </body>
 </html>
