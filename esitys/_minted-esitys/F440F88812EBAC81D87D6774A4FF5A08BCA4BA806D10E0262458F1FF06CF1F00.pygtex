@@ -1,0 +1,16 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+    \PYG{n+nf}{movl}    \PYG{n+no}{\PYGZdl{}0}\PYG{p}{,} \PYG{n+nv}{\PYGZpc{}r12d}
+    \PYG{n+nf}{movl}    \PYG{n+no}{\PYGZdl{}0}\PYG{p}{,} \PYG{n+nv}{\PYGZpc{}ebx}
+    \PYG{n+nf}{jmp} \PYG{n+no}{.L2}
+\PYG{n+nl}{.L3:}
+    \PYG{n+nf}{movslq}  \PYG{n+nv}{\PYGZpc{}ebx}\PYG{p}{,} \PYG{n+nv}{\PYGZpc{}rax}
+    \PYG{n+nf}{movl}    \PYG{n+no}{arr}\PYG{p}{(,}\PYG{n+nv}{\PYGZpc{}rax}\PYG{p}{,}\PYG{l+m+mi}{4}\PYG{p}{),} \PYG{n+nv}{\PYGZpc{}eax}
+    \PYG{n+nf}{addl}    \PYG{n+nv}{\PYGZpc{}eax}\PYG{p}{,} \PYG{n+nv}{\PYGZpc{}r12d}
+    \PYG{n+nf}{addl}    \PYG{n+no}{\PYGZdl{}1}\PYG{p}{,} \PYG{n+nv}{\PYGZpc{}ebx}
+\PYG{n+nl}{.L2:}
+    \PYG{n+nf}{cmpl}    \PYG{n+no}{\PYGZdl{}9}\PYG{p}{,} \PYG{n+nv}{\PYGZpc{}ebx}
+    \PYG{n+nf}{jle} \PYG{n+no}{.L3}
+
+\PYG{n+nl}{arr:} \PYG{n+na}{.word} \PYG{l+m+mi}{0}\PYG{p}{,} \PYG{l+m+mi}{1}\PYG{p}{,} \PYG{l+m+mi}{2}\PYG{p}{,} \PYG{l+m+mi}{3}\PYG{p}{,} \PYG{l+m+mi}{4}
+     \PYG{n+na}{.word} \PYG{l+m+mi}{5}\PYG{p}{,} \PYG{l+m+mi}{6}\PYG{p}{,} \PYG{l+m+mi}{7}\PYG{p}{,} \PYG{l+m+mi}{8}\PYG{p}{,} \PYG{l+m+mi}{9}
+\end{Verbatim}

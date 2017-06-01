@@ -1,0 +1,17 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+    \PYG{n+nf}{mov} \PYG{n+no}{r5}\PYG{p}{,} \PYG{p}{\PYGZsh{}}\PYG{l+m+mi}{0}
+    \PYG{n+nf}{mov} \PYG{n+no}{r4}\PYG{p}{,} \PYG{p}{\PYGZsh{}}\PYG{l+m+mi}{0}
+        \PYG{n+nf}{b}   \PYG{n+no}{.L2}
+\PYG{n+nl}{.L3:}
+    \PYG{n+nf}{ldr} \PYG{n+no}{r3}\PYG{p}{,} \PYG{n+no}{.L5}
+    \PYG{n+nf}{ldr} \PYG{n+no}{r3}\PYG{p}{,} \PYG{p}{[}\PYG{n+no}{r3}\PYG{p}{,} \PYG{n+no}{r4}\PYG{p}{,} \PYG{n+no}{lsl} \PYG{p}{\PYGZsh{}}\PYG{l+m+mi}{2}\PYG{p}{]}
+    \PYG{n+nf}{add} \PYG{n+no}{r5}\PYG{p}{,} \PYG{n+no}{r5}\PYG{p}{,} \PYG{n+no}{r3}
+    \PYG{n+nf}{add} \PYG{n+no}{r4}\PYG{p}{,} \PYG{n+no}{r4}\PYG{p}{,} \PYG{p}{\PYGZsh{}}\PYG{l+m+mi}{1}
+\PYG{n+nl}{.L2:}
+    \PYG{n+nf}{cmp} \PYG{n+no}{r4}\PYG{p}{,} \PYG{p}{\PYGZsh{}}\PYG{l+m+mi}{9}
+    \PYG{n+nf}{ble} \PYG{n+no}{.L3}
+
+\PYG{n+nl}{.L5:} \PYG{n+na}{.word} \PYG{n+no}{arr}
+\PYG{n+nl}{arr:} \PYG{n+na}{.word} \PYG{l+m+mi}{0}\PYG{p}{,} \PYG{l+m+mi}{1}\PYG{p}{,} \PYG{l+m+mi}{2}\PYG{p}{,} \PYG{l+m+mi}{3}\PYG{p}{,} \PYG{l+m+mi}{4}
+     \PYG{n+na}{.word} \PYG{l+m+mi}{5}\PYG{p}{,} \PYG{l+m+mi}{6}\PYG{p}{,} \PYG{l+m+mi}{7}\PYG{p}{,} \PYG{l+m+mi}{8}\PYG{p}{,} \PYG{l+m+mi}{9}
+\end{Verbatim}

@@ -1,0 +1,263 @@
+\documentclass{beamer}
+
+\usepackage{amsmath}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{parskip}
+\usepackage{graphicx}
+\usepackage{epstopdf}
+\usepackage{lmodern,textcomp}
+\usepackage[main=finnish,english]{babel}   
+\usepackage{tikz}
+\usepackage[european,cute inductors]{circuitikz}
+%\usepackage{a4wide}            % Eihän tässä työssä ollut mitään sivurajoituksia?
+\usepackage{todonotes}
+
+\usepackage{parskip}
+\usepackage[section]{placeins}
+%\usepackage{comment}
+%\usepackage{titling}
+\usepackage{url}
+\usepackage{listingsutf8}
+\usepackage{listings}
+\usepackage{booktabs}
+\usepackage{siunitx}
+\usepackage{minted}
+
+\author{Henrik Lievonen}
+\title{ARM-assemblyn alkeet}
+
+\begin{document}
+
+\frame{\titlepage}
+
+% Mikä assembly
+\frame{
+    \frametitle{Sisällys}
+    \tableofcontents
+}
+
+\section{Mikä ihmeen assembly}
+\begin{frame}[fragile]
+    \frametitle{Mikä ihmeen assembly}
+    \begin{columns}[T]
+        \begin{column}{.48\textwidth}
+            \begin{minted}{c++}
+int arr[10] = {
+    0, 1, 2, 3, 4,
+    5, 6, 7, 8, 9
+};
+int s = 0;
+for (int i = 0; i < 10; i++)
+    s += arr[i];
+            \end{minted}
+        \end{column}
+        \pause
+        \begin{column}{.48\textwidth}
+            \begin{minted}{arm}
+    mov r5, #0
+    mov r4, #0
+        b   .L2
+.L3:
+    ldr r3, .L5
+    ldr r3, [r3, r4, lsl #2]
+    add r5, r5, r3
+    add r4, r4, #1
+.L2:
+    cmp r4, #9
+    ble .L3
+
+.L5: .word arr
+arr: .word 0, 1, 2, 3, 4
+     .word 5, 6, 7, 8, 9
+            \end{minted}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\section{Mikä ihmeen ARM}
+\begin{frame}
+    \frametitle{Mikä ihmeen ARM}
+    \begin{itemize}
+        \item \emph{Advanced RISC Machine} (aiemmin \emph{Acorn RISC Machine})
+        \item 32-bittinen mikroprosessoriarkkitehtuuri
+        \item 16 yleisrekisteriä (\mintinline{arm}{r0} - \mintinline{arm}{r15})
+        %\item Yksi vanhimmista RISC-arkkitehtuureista
+        \item Suosittu pienissä, sulautetuissa järjestelmissä
+        \item Vähävirtainen
+        \item Tarvittaessa hyvinkin yksinkertainen
+        %\item Brittiläisen Acornin 80-luvulla kehittämä
+
+    \end{itemize}
+\end{frame}
+
+% Mikä arm
+\section{RISC vs CISC}
+\begin{frame}
+    \frametitle{RISC vs CISC}
+    \centering
+    \begin{tabular}{p{.45\textwidth} | p{.45\textwidth}}
+        RISC & CISC \\
+        \hline
+        \foreignlanguage{english}{\emph{Reduced Instruction Set Computer}} & \foreignlanguage{english}{\emph{Complex Instruction Set Computer}} \\
+        Käskyt tekevät yhden asian & Käskyt voivat tehdä monta asiaa \\
+        Käskyt tasamittaisia & Käskyt vaihtelevan mittaisia \\
+        Suurin osa käskyistä vakioaikaisia & Eri käskyt vievät eri verran aikaa \\
+        \emph{ARM}, \emph{MIPS}, \emph{SPARC}, \emph{Alpha}, \emph{PowerPC} & \emph{x86}, \emph{VAX}, \emph{IBM S/360}, \emph{PDP-11} \\
+    \end{tabular}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{RISC vs CISC}
+    \begin{columns}[T]
+        \begin{column}{.45\textwidth}
+            ARM:
+            \begin{minted}{arm}
+    mov r5, #0
+    mov r4, #0
+        b   .L2
+.L3:
+    ldr r3, .L5
+    ldr r3, [r3, r4, lsl #2]
+    add r5, r5, r3
+    add r4, r4, #1
+.L2:
+    cmp r4, #9
+    ble .L3
+
+.L5: .word arr
+arr: .word 0, 1, 2, 3, 4
+     .word 5, 6, 7, 8, 9
+            \end{minted}
+        \end{column}
+        \begin{column}{.51\textwidth}
+            x86\_64:
+            \begin{minted}{gas}
+    movl    $0, %r12d
+    movl    $0, %ebx
+    jmp .L2
+.L3:
+    movslq  %ebx, %rax
+    movl    arr(,%rax,4), %eax
+    addl    %eax, %r12d
+    addl    $1, %ebx
+.L2:
+    cmpl    $9, %ebx
+    jle .L3
+
+arr: .word 0, 1, 2, 3, 4
+     .word 5, 6, 7, 8, 9
+            \end{minted}
+        \end{column}
+    \end{columns}
+\end{frame}
+% Mikä RISC
+% RISC vs CISC
+
+\section{Komennot}
+\begin{frame}[fragile]
+    \frametitle{Komennot}
+    \begin{minted}{arm}
+start:
+add    r0, r1, r2
+subeq  r0, r1, r2
+mulseq r0, r1, r2
+eors   r0, r1, #10
+rsb    r0, r1, r2, lsl #2
+and    r0, r1, r2, asr r3
+mov    r0, r1
+cmp    r0, r1, ror #15
+b      start
+bl     start
+ldr    r0, [r1, #-4]
+ldr    r0, [r1, r2]
+ldr    r0, [r1, r2, lsl #2]
+    \end{minted}
+\end{frame}
+
+% Komentoluokat
+\section{Lisää ARM-arkkitehtuurista}
+% Ehdollisuus
+\begin{frame}
+    \frametitle{Lisää ARM-arkkitehtuurista}
+    Ehdolliset komennot
+    \centering
+    \begin{tabular}{p{.15\textwidth} | p{.75\textwidth}}
+        \hline
+        eq & Yhtäsuuri kuin \\
+        ne & Erisuuri kuin \\
+        cs / hs & Etumerkitön suurempi tai yhtäsuuri kuin \\
+        cc / lo & Etumerkitön pienempi kuin \\
+        mi & Negatiivinen \\
+        pl & Positiivinen tai nolla \\
+        vs & Ylivuoto \\
+        vc & Ei ylivuotoa \\
+        hi & Etumerkitön suurempi kuin \\
+        ls & Etumerkitön pienempi tai yhtäsuuri kuin \\
+        ge & Etumerkillinen suurempi tai yhtäsäsuuri kuin \\
+        lt & Etumerkillinen pienempi kuin \\
+        gt & Etumerkillinen suurempi kuin \\
+        le & Etumerkillinen pienempi tai yhtäsuuri kuin \\
+        al & Aina \\
+    \end{tabular}
+\end{frame}
+% Siirrot
+\begin{frame}
+    \frametitle{Lisää ARM-arkkitehtuurista}
+    Siirrot
+    \centering
+    \begin{tabular}{p{.15\textwidth} | p{.75\textwidth}}
+        \hline
+        lsr & Looginen siirto oikealle \\
+        lsl & Looginen siirto vasemmalle \\
+        asr & Aritmeettinen siirto oikealle \\
+        ror & Pyöritys oikealle \\
+        rrx & Pyöritys oikealle muistinumerolla \\
+    \end{tabular}
+    
+    Parametrit
+    \begin{itemize}
+        \item Vakioiden oltava oikealla välillä ($\approx 0 - \approx 32$)
+        \item Rekistereistä käytetään alinta 8 bittiä
+    \end{itemize}
+\end{frame}
+% CPSR
+\begin{frame}
+    \frametitle{Lisää ARM-arkkitehtuurista}
+    \begin{itemize}
+        \item CPSR
+        \begin{itemize}
+            \item \emph{Current Program Status Register}
+            \item Suorittimen nykyinen tila
+            \item ALUn tila (ehtoja varten)
+            \item Onko keskeytykset käytössä
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+% Erikoismerkitykset (konventioita)
+\begin{frame}
+    \frametitle{Lisää ARM-arkkitehtuurista}
+    \begin{itemize}
+        \item Rekisterit
+        \begin{itemize}
+            \item \mintinline{arm}{r15} program counter \mintinline{arm}{pc}
+            \item \mintinline{arm}{r14} link register \mintinline{arm}{lr}
+            \item \mintinline{arm}{r13} stack pointer \mintinline{arm}{sp}
+            \item \mintinline{arm}{r12} Intra-Procedure-call scratch register
+            \item \mintinline{arm}{r11} frame pointer \mintinline{arm}{fp}
+            \item \mintinline{arm}{r4} - \mintinline{arm}{r10} local variables
+            \item \mintinline{arm}{r0} - \mintinline{arm}{r3} arguments and return values
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+% Eri tilat (ehkä)
+\section{Esimerkkejä}
+\begin{frame}
+    \frametitle{Esimerkkejä}
+\end{frame}
+% Peruskomentojen syntaksi
+% Pieniä ohjelmia
+
+
+\end{document}
+

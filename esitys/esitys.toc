@@ -1,0 +1,7 @@
+\select@language {finnish}
+\beamer@sectionintoc {1}{Mik\IeC {\"a} ihmeen assembly}{3}{0}{1}
+\beamer@sectionintoc {2}{Mik\IeC {\"a} ihmeen ARM}{5}{0}{2}
+\beamer@sectionintoc {3}{RISC vs CISC}{6}{0}{3}
+\beamer@sectionintoc {4}{Komennot}{8}{0}{4}
+\beamer@sectionintoc {5}{Lis\IeC {\"a}\IeC {\"a} ARM-arkkitehtuurista}{9}{0}{5}
+\beamer@sectionintoc {6}{Esimerkkej\IeC {\"a}}{13}{0}{6}

@@ -1,0 +1,16 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{n+nl}{start:}
+\PYG{n+nf}{add}    \PYG{n+no}{r0}\PYG{p}{,} \PYG{n+no}{r1}\PYG{p}{,} \PYG{n+no}{r2}
+\PYG{n+nf}{subeq}  \PYG{n+no}{r0}\PYG{p}{,} \PYG{n+no}{r1}\PYG{p}{,} \PYG{n+no}{r2}
+\PYG{n+nf}{mulseq} \PYG{n+no}{r0}\PYG{p}{,} \PYG{n+no}{r1}\PYG{p}{,} \PYG{n+no}{r2}
+\PYG{n+nf}{eors}   \PYG{n+no}{r0}\PYG{p}{,} \PYG{n+no}{r1}\PYG{p}{,} \PYG{p}{\PYGZsh{}}\PYG{l+m+mi}{10}
+\PYG{n+nf}{rsb}    \PYG{n+no}{r0}\PYG{p}{,} \PYG{n+no}{r1}\PYG{p}{,} \PYG{n+no}{r2}\PYG{p}{,} \PYG{n+no}{lsl} \PYG{p}{\PYGZsh{}}\PYG{l+m+mi}{2}
+\PYG{n+nf}{and}    \PYG{n+no}{r0}\PYG{p}{,} \PYG{n+no}{r1}\PYG{p}{,} \PYG{n+no}{r2}\PYG{p}{,} \PYG{n+no}{asr} \PYG{n+no}{r3}
+\PYG{n+nf}{mov}    \PYG{n+no}{r0}\PYG{p}{,} \PYG{n+no}{r1}
+\PYG{n+nf}{cmp}    \PYG{n+no}{r0}\PYG{p}{,} \PYG{n+no}{r1}\PYG{p}{,} \PYG{n+no}{ror} \PYG{p}{\PYGZsh{}}\PYG{l+m+mi}{15}
+\PYG{n+nf}{b}      \PYG{n+no}{start}
+\PYG{n+nf}{bl}     \PYG{n+no}{start}
+\PYG{n+nf}{ldr}    \PYG{n+no}{r0}\PYG{p}{,} \PYG{p}{[}\PYG{n+no}{r1}\PYG{p}{,} \PYG{p}{\PYGZsh{}\PYGZhy{}}\PYG{l+m+mi}{4}\PYG{p}{]}
+\PYG{n+nf}{ldr}    \PYG{n+no}{r0}\PYG{p}{,} \PYG{p}{[}\PYG{n+no}{r1}\PYG{p}{,} \PYG{n+no}{r2}\PYG{p}{]}
+\PYG{n+nf}{ldr}    \PYG{n+no}{r0}\PYG{p}{,} \PYG{p}{[}\PYG{n+no}{r1}\PYG{p}{,} \PYG{n+no}{r2}\PYG{p}{,} \PYG{n+no}{lsl} \PYG{p}{\PYGZsh{}}\PYG{l+m+mi}{2}\PYG{p}{]}
+\end{Verbatim}

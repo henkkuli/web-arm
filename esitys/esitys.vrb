@@ -1,0 +1,17 @@
+\frametitle{Komennot}
+    \begin{minted}{arm}
+start:
+add    r0, r1, r2
+subeq  r0, r1, r2
+mulseq r0, r1, r2
+eors   r0, r1, #10
+rsb    r0, r1, r2, lsl #2
+and    r0, r1, r2, asr r3
+mov    r0, r1
+cmp    r0, r1, ror #15
+b      start
+bl     start
+ldr    r0, [r1, #-4]
+ldr    r0, [r1, r2]
+ldr    r0, [r1, r2, lsl #2]
+    \end{minted}
