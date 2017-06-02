@@ -22,6 +22,12 @@ declare namespace uc {
     export var ARM_REG_PC: number;
 
     export var PROT_ALL: number;
+    export var PROT_WRITE: number;
+    export var PROT_READ: number;
+
+    export var HOOK_MEM_WRITE: number;
+    export var HOOK_MEM_READ: number;
+    export var HOOK_MEM_FETCH: number;
 
     export class Unicorn {
         public constructor(arch: number, mode: number);
@@ -34,5 +40,6 @@ declare namespace uc {
         public reg_read_i32(reg: number): number;
         public emu_start(begin: number, until: number, timeout: number, count: number): void;
         public emu_stop(begin: number, until: number, timeout: number, count: number): void;
+        public hook_add<T>(type: number, callback: (uc: Unicorn, a: number, address: number, b: number, size: number, value: number, c: number, userData: T) => void, userData: T, start: number, end: number): void;
     }
 }

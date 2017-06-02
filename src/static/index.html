@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
 <head>
-    <title>A website</title>
+    <title>Web-ARM</title>
     <meta charset="utf-8" />
     <script src="system.js"></script>
     <script src="https://cdn.rawgit.com/AlexAltea/unicorn.js/3bdab1c37571b390502308f12ee61a9205df5202/dist/unicorn-arm.min.js?raw=true"></script>
@@ -57,6 +57,8 @@
         }
         #statusPanel {
             display: table-row;
+            font-family: monospace;
+            white-space: pre;
         }
         .memoryLine {
             font-family: monospace;
@@ -68,6 +70,16 @@
         }
         .memoryLine.pc {
             background: #a00;
+        }
+        #screen {
+            width: 480px;
+            height: 432px;
+        }
+        #screen {
+            border: 1px solid #000;
+        }
+        #screen.active {
+            border: 1px solid #a00;
         }
     </style>
 </head>
@@ -81,7 +93,8 @@
     </div>
     <div id="codePanel">
         <textarea id="code"></textarea>
-        <div id="statusPanel">Tekstiä</div>
+        <canvas id="screen"></canvas><br />
+        <div id="statusPanel"></div>
     </div>
     <div id="heapPanel"></div>
 </body>

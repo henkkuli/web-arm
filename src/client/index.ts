@@ -17,6 +17,14 @@ const REGISTERS = [
     uc.ARM_REG_R8, uc.ARM_REG_R9, uc.ARM_REG_R10, uc.ARM_REG_R11, uc.ARM_REG_R12, uc.ARM_REG_R13, uc.ARM_REG_R14, uc.ARM_REG_R15,
 ];
 
+const SCREEN_WIDTH = 160;
+const SCREEN_HEIGHT = 144;
+const SCREEN_MEM_START = 0x10000000;
+const SCREEN_MEM_SIZE = SCREEN_HEIGHT*SCREEN_WIDTH*4;
+const SCREEN_CTR_START = 0x20000000;
+const SCREEN_CTR_SIZE = 0x1000;
+const KEYBOARD_CTR_START = 0x30000000;
+const KEYBOARD_CTR_SIZE = 0x1000;
 
 class Executer {
     private runner: uc.Unicorn
@@ -25,8 +33,11 @@ class Executer {
     private scrollContainerDiv: HTMLDivElement;
     private scrollContentDiv: HTMLDivElement;
     private scrollLines: HTMLDivElement[] = [];
+    private screenCanvas: HTMLCanvasElement;
+    private ctx: CanvasRenderingContext2D;
+    private screenData: ImageData;
 
-    public constructor(statusDiv: HTMLDivElement, scrollContainerDiv: HTMLDivElement) {
+    public constructor(statusDiv: HTMLDivElement, scrollContainerDiv: HTMLDivElement, screenCanvas: HTMLCanvasElement, codeArea: HTMLTextAreaElement) {
         this.runner = new uc.Unicorn(ARCHu, MODEu);
         // Map the main memory
         this.runner.mem_map(0x0, this.memSize, uc.PROT_ALL);
@@ -36,6 +47,53 @@ class Executer {
         this.scrollContentDiv = document.createElement('div');
         this.scrollContainerDiv.appendChild(this.scrollContentDiv);
         this.statusDiv = statusDiv;
+
+        this.screenCanvas = screenCanvas;
+        screenCanvas.width = SCREEN_WIDTH;
+        screenCanvas.height = SCREEN_HEIGHT;
+        this.ctx = screenCanvas.getContext('2d')!;
+        this.screenData = this.ctx.getImageData(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+        // Set all alpha channels
+        for (let i = 3; i < SCREEN_MEM_SIZE; i += 4)
+            this.screenData.data[i] = 255;
+        this.ctx.putImageData(this.screenData, 0, 0);
+
+        // Map the screen memory
+        this.runner.mem_map(SCREEN_MEM_START, SCREEN_MEM_SIZE, uc.PROT_ALL);
+        this.runner.mem_map(SCREEN_CTR_START, SCREEN_CTR_SIZE, uc.PROT_WRITE);
+        this.runner.hook_add(uc.HOOK_MEM_WRITE, (u: uc.Unicorn, a: number, address: number, b: number, size: number, value: number) => {
+            address-=SCREEN_MEM_START;
+            for (let i = 0; i < size; i++) {
+                if (((address+i)&3) != 3)
+                    this.screenData.data[address+i] = (value >> (8*i)) & 0xff;
+            }
+        }, null, SCREEN_MEM_START, SCREEN_MEM_START+SCREEN_MEM_SIZE);
+        this.runner.hook_add(uc.HOOK_MEM_WRITE, (u: uc.Unicorn, a: number, address: number, b: number, size: number, value: number) => {
+            this.ctx.putImageData(this.screenData, 0, 0);
+        }, null, SCREEN_CTR_START, SCREEN_CTR_START+SCREEN_CTR_SIZE);
+
+        // Map the keyboard
+        this.runner.mem_map(KEYBOARD_CTR_START, KEYBOARD_CTR_SIZE, uc.PROT_READ);
+        const keyDownValue = new Uint8Array([0xFF]);
+        const keyUpValue = new Uint8Array([0x00]);
+        let canvasActive = false;
+        document.addEventListener('mousedown', e => {
+            canvasActive = e.target === screenCanvas;
+            if (canvasActive)
+                screenCanvas.classList.add('active');
+            else
+                screenCanvas.classList.remove('active');
+        });     
+        document.addEventListener('keydown', e => {
+            if (!canvasActive) return;
+            e.preventDefault();
+            this.runner.mem_write(KEYBOARD_CTR_START + e.keyCode, keyDownValue);
+        });
+        document.addEventListener('keyup', e => {
+            if (!canvasActive) return;
+            e.preventDefault();
+            this.runner.mem_write(KEYBOARD_CTR_START + e.keyCode, keyUpValue);
+        });
 
         this.scrollContainerDiv.addEventListener('scroll', e => this.updateUI());
     }
@@ -53,9 +111,10 @@ class Executer {
     public updateUI() {
         // Update status panel
         let lines: string[] = [];
+        for (let i = 0; i < 8; i++)
+            lines.push(sprintf('r%-2d: 0x%08X   r%-2d: 0x%08X', i, this.runner.reg_read_i32(REGISTERS[i]), i+8, this.runner.reg_read_i32(REGISTERS[i+8])));
+            //lines.push(`r${i}: ${util.toHex(this.runner.reg_read_i32(REGISTERS[i]))}`);
         lines.push(`CPSR: 0x${util.toHex(this.runner.reg_read_i32(uc.ARM_REG_CPSR))}`);
-        for (let i = 0; i < REGISTERS.length; i++)
-            lines.push(`r${i}: ${util.toHex(this.runner.reg_read_i32(REGISTERS[i]))}`);
         this.statusDiv.innerText = lines.join('\n');
 
         // Compute vertical space needed for the full heap
@@ -112,11 +171,12 @@ let stepButton = document.getElementById('step')!;
 let runButton = document.getElementById('run')!;
 let stopButton = document.getElementById('stop')!;
 let freqSpan = document.getElementById('freq')!;
+let screenCanvas = document.getElementById('screen')! as HTMLCanvasElement;
 
 let heapDiv = document.getElementById('heapPanel')! as HTMLDivElement;
 let statusDiv = document.getElementById('statusPanel')! as HTMLDivElement;
 
-let executer = new Executer(statusDiv, heapDiv);
+let executer = new Executer(statusDiv, heapDiv, screenCanvas, editor);
 let keystone = new ks.Keystone(ARCHk, MODEk);
 let capstone = new cs.Capstone(ARCHc, MODEc);
 
@@ -124,6 +184,7 @@ let capstone = new cs.Capstone(ARCHc, MODEc);
 compileButton.addEventListener('click', e => {
     let program = keystone.asm(editor.value);
     executer.loadProgram(program);
+    running = false;
 });
 stepButton.addEventListener('click', e => {
     executer.run();
